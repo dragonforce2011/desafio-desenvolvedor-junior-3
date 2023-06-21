@@ -1,0 +1,99 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const App = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [token, setToken] = useState('');
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const registerUser = async () => {
+    try {
+      const response = await axios.post('/register', {
+        username: username,
+        password: password
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const loginUser = async () => {
+    try {
+      const response = await axios.post('/login', {
+        username: username,
+        password: password
+      });
+      setToken(response.data.token);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchPosts = async () => {
+    try {
+      const response = await axios.get('/posts', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setPosts(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return (
+    <div>
+      <h1>Blog App</h1>
+      <div>
+        <h2>Registro</h2>
+        <input
+          type="text"
+          placeholder="Nome de usuário"
+          value={username}
+          onChange={e => setUsername(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Senha"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+        />
+        <button onClick={registerUser}>Registrar</button>
+      </div>
+      <div>
+        <h2>Login</h2>
+        <input
+          type="text"
+          placeholder="Nome de usuário"
+          value={username}
+          onChange={e => setUsername(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Senha"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+        />
+        <button onClick={loginUser}>Entrar</button>
+      </div>
+      <div>
+        <h2>Postagens</h2>
+        {posts.map(post => (
+          <div key={post.id}>
+            <h3>{post.title}</h3>
+            <p>{post.content}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default App;
