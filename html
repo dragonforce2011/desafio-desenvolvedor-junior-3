@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Blog App</title>
+</head>
+<body>
+  <h1>Blog App</h1>
+
+  <div>
+    <h2>Registro</h2>
+    <input type="text" id="username-register" placeholder="Nome de usuário">
+    <input type="password" id="password-register" placeholder="Senha">
+    <button id="register-btn">Registrar</button>
+  </div>
+
+  <div>
+    <h2>Login</h2>
+    <input type="text" id="username-login" placeholder="Nome de usuário">
+    <input type="password" id="password-login" placeholder="Senha">
+    <button id="login-btn">Entrar</button>
+  </div>
+
+  <div>
+    <h2>Postagens</h2>
+    <ul id="posts-list"></ul>
+  </div>
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    // Funções JavaScript para interagir com a API
+    document.getElementById('register-btn').addEventListener('click', registerUser);
+    document.getElementById('login-btn').addEventListener('click', loginUser);
+
+    async function registerUser() {
+      const username = document.getElementById('username-register').value;
+      const password = document.getElementById('password-register').value;
+
+      try {
+        const response = await axios.post('/register', {
+          username: username,
+          password: password
+        });
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    async function loginUser() {
+      const username = document.getElementById('username-login').value;
+      const password = document.getElementById('password-login').value;
+
+      try {
+        const response = await axios.post('/login', {
+          username: username,
+          password: password
+        });
+        const token = response.data.token;
+        fetchPosts(token);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    async function fetchPosts(token) {
+      try {
+        const response = await axios.get('/posts', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        const posts = response.data;
+
+        const postsList = document.getElementById('posts-list');
+        postsList.innerHTML = '';
+
+        posts.forEach(post => {
+          const listItem = document.createElement('li');
+          const title = document.createElement('h3');
+          title.textContent = post.title;
+          const content = document.createElement('p');
+          content.textContent = post.content;
+
+          listItem.appendChild(title);
+          listItem.appendChild(content);
+          postsList.appendChild(listItem);
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  </script>
+</body>
+</html>
