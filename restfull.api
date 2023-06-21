@@ -1,0 +1,42 @@
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+
+// Middleware para o parse do corpo das requisições
+app.use(bodyParser.json());
+
+// Rota para cadastrar um usuário
+app.post('/register', (req, res) => {
+  // Lógica para cadastrar o usuário
+  res.status(200).json({ message: 'Usuário cadastrado com sucesso' });
+});
+
+// Rota para autenticar um usuário
+app.post('/login', (req, res) => {
+  // Lógica para autenticar o usuário
+  res.status(200).json({ message: 'Usuário autenticado com sucesso' });
+});
+
+// Rota para cadastrar uma postagem (requer autenticação)
+app.post('/posts', (req, res) => {
+  // Lógica para cadastrar uma postagem
+  res.status(200).json({ message: 'Postagem cadastrada com sucesso' });
+});
+
+// Rota para editar uma postagem do ID especificado (requer autenticação)
+app.put('/posts/:id', (req, res) => {
+  const postId = req.params.id;
+  // Lógica para editar a postagem com o ID especificado
+  res.status(200).json({ message: `Postagem ${postId} editada com sucesso` });
+});
+
+// Rota para retornar a lista de todas as postagens (requer autenticação)
+app.get('/posts', (req, res) => {
+  // Lógica para retornar todas as postagens
+  res.status(200).json({ message: 'Lista de postagens' });
+});
+
+// Rota para retornar a postagem do ID especificado (requer autenticação)
+app.get('/posts/:id', (req, res) => {
+  const postId = req.params.id;
+  // Lógica para retornar a postagem com o ID
